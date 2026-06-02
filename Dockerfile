@@ -13,14 +13,15 @@ RUN apt-get update && apt-get install -y \
     mariadb-client \
     && docker-php-ext-install mysqli pdo pdo_mysql zip
 
-RUN a2dismod mpm_event || true \
- && a2enmod mpm_prefork \
- && a2enmod rewrite
+RUN a2dismod mpm_event || true
+RUN a2dismod mpm_worker || true
+RUN a2enmod mpm_prefork
+RUN a2enmod rewrite
 
 WORKDIR /var/www/html
 
-RUN git clone https://github.com/chamilo/chamilo-lms.git .
+RUN git clone --depth 1 https://github.com/chamilo/chamilo-lms.git .
 
 RUN chown -R www-data:www-data /var/www/html
 
-EXPOSE 80
+CMD ["apache2-foreground"]
