@@ -13,7 +13,9 @@ RUN apt-get update && apt-get install -y \
     mariadb-client \
     && docker-php-ext-install mysqli pdo pdo_mysql zip
 
-RUN a2enmod rewrite
+RUN a2dismod mpm_event || true \
+ && a2enmod mpm_prefork \
+ && a2enmod rewrite
 
 WORKDIR /var/www/html
 
